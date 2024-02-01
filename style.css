@@ -1,0 +1,9 @@
+body {
+    background-color: #DD7F7A;
+    color: #EBE8D6;    
+}
+
+header, main {
+    max-width: 1050px;
+    margin: 0 auto;
+}
