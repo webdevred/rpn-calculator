@@ -3,7 +3,19 @@ body {
     color: #EBE8D6;    
 }
 
-header, main {
+header, .main-container {
     max-width: 1050px;
     margin: 0 auto;
+}
+
+.main-container {
+    display: flex;
+}
+
+main {
+    flex: 75%;
+}
+
+aside img {
+    border: 3px solid #EBE8D6;
 }
