@@ -1,0 +1,120 @@
+* RPN Calculator
+
+Welcome to the repository for my RPN calculator. You can see it in action at https://webdevred.github.io/rpn-calculator/
+
+Continue reading for information for about how it works,
+
+** HTML
+
+when it comes to HTML we need two things
+1. input where the user can enter a expression
+2. a span where we store the result
+
+#+begin_src html
+  <input id="expression">
+  Result: <span id="result"></span>
+#+end_src
+
+1. when page has loaded, query the page for those elements
+2. when user releases a key while in the form fetch the value and give that value to solveRPN.
+3. set the innerText of the result span to the result of step 2. 
+
+#+begin_src js
+  window.onload = () => {
+      const expressionInput = document.querySelector("#expression");
+      const resultSpan = document.querySelector("#result");
+
+      expressionInput.onkeyup = () => resultSpan.innerText = solveRPN(expressionInput.value);
+
+  };
+#+end_src
+
+** JavaScript
+
+1. split the expression which is a string into a array of strings
+2. reduce/fold over the the array
+   - the folding function takes two arguments being stack and single
+   - stack will be be the accumulator being [] and single will be a operator or a number
+   - if single is a number put it in the stack, if it is a operator perform the operation on the two newest numbers, then put that result in the stack
+3. verify there is only one result, otherwise smth is wrong
+
+#+begin_src js :results output
+  const solveRPN = (expression) => {
+      let resultArray = expression.split(" ").reduce(reducingFun, []);
+      if (resultArray.length === 1) {
+          return resultArray[0];
+      } else {
+          return "";
+      }
+  };
+
+
+  const reducingFun = (stack, single) => {
+      if (isNumeric(single)) return [single, ...stack];
+
+      let [y, x] = stack.slice(0, 2);
+
+      if (!isNumeric(x) && !isNumeric(y)) return [];
+
+      let rest = stack.slice(2);
+
+      switch (single) {
+          case "+":
+              return [parseFloat(x) + parseFloat(y), ...rest];
+          case "*":
+              return [parseFloat(x) * parseFloat(y), ...rest];
+          case "-":
+              return [parseFloat(x) - parseFloat(y), ...rest];
+          case "/":
+              return [parseFloat(x) / parseFloat(y), ...rest];
+          case "^":
+              return [Math.pow(parseFloat(x), parseFloat(y)), ...rest];
+      }
+
+  };
+
+  const isNumeric = (str) => {
+      if (typeof str != "string") return false
+      return !isNaN(str) && !isNaN(parseFloat(str))
+  };
+
+  console.log(solveRPN("2 2 +"));
+
+  console.log(solveRPN("5 2 -"));
+
+  console.log(solveRPN("10 5 /"));
+
+  console.log(solveRPN("10 4 3 + 2 * -"));
+#+end_src
+
+#+results:
+: 4
+: 3
+: 2
+: -4
+
+** CSS
+
+#+begin_src css
+  body {
+      background-color: #DD7F7A;
+      color: #EBE8D6;    
+  }
+
+  header, .main-container {
+      max-width: 1050px;
+      margin: 0 auto;
+  }
+
+  .main-container {
+      display: flex;
+  }
+
+  main {
+      flex: 75%;
+  }
+
+  aside img {
+      border: 3px solid #EBE8D6;
+  }
+#+end_src
